@@ -10,7 +10,6 @@
 @using (Html.BeginForm()) 
 {
     <div class="form-horizontal">
-        <h4>ItemViewModel</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -23,7 +22,7 @@
         @Html.LabelFor(model => model.Categories, htmlAttributes: new { @class = "control-label col-md-2" })
         <br />
         <div class="form-group" id="categories">
-            @if (Model != null)
+            @if (Model != null && Model.Categories != null)
             {
                 foreach (var categ in Model.Categories)
                 {
@@ -83,8 +82,14 @@
         let item_categories = categories.querySelectorAll("#one-category");
         console.log(item_categories);
 
+        const name = document.getElementById("name").value;
+        if (isNullOrWhitespace(name)) {
+            alert("type name field");
+            return;
+        }
+
         let item = {
-            Name: document.getElementById("name").value,
+            Name: name,
             Categories: new Array()
         };
 
@@ -103,12 +108,18 @@
         req.setRequestHeader('Content-type', 'application/json')
 
         req.addEventListener("load", function () {
-            let message = (req.status === 200) ?
-                "успешное добавление" :
-                "Ошибка " + req.status + req.responseText + "\n вещь не добавлена!";
-            alert(message)
+            document.open();
+            document.write(req.responseText);
+            document.close();
         });
 
         req.send(JSON.stringify(item))
     })
+
+    function isNullOrWhitespace(input) {
+
+        if (typeof input === 'undefined' || input == null) return true;
+
+        return input.replace(/\s/g, '').length < 1;
+    }
 </script>

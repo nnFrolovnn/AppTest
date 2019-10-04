@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApp.Models.ItemViewModel>
+﻿@model IEnumerable<WebApp.Models.Item>
 
 @{
     ViewBag.Title = "Item";
@@ -19,21 +19,22 @@
         </th>
     </tr>
 
-    @if(Model!= null)
+    @if (Model != null)
     {
-        foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @foreach (var category in item.Categories)
-                {
-                    @(category + ", ");
-                }
-            </td>
-        </tr>
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @foreach (var category in item.Categories)
+                    {
+                        @(category.Category.Name + ", ");
+                    }
+                </td>
+            </tr>
+        }
     }
-}
 
 </table>

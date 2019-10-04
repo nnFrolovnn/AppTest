@@ -1,20 +1,23 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Results;
+using WebApp.Models;
 using System.Data.Entity;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using WebApp.Models;
 
-namespace WebApp.Controllers
+namespace WebApp.Controllers.api
 {
     [Authorize]
-    public class ItemController : Controller
+    [Route("api/{controller}/{action}")]
+    public class ItemController : ApiController
     {
-        public ActionResult Index()
+        [HttpGet]
+        public JsonResult<List<Item>> Index()
         {
             using (var db = new AppDbContext())
             {
@@ -23,31 +26,13 @@ namespace WebApp.Controllers
                               .Include(x => x.Categories.Select(y => y.Category))
                               .ToList();
 
-                return View(items);
+                return Json(items);
             }
-        }
-
-        public ActionResult Create()
-        {
-            bool result = LoadViewBagInfoForCreateItem();
-            if (!result)
-            {
-                return RedirectToAction("AddCategory");
-            }
-
-            return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(string param)
+        public async Task<IHttpActionResult> Create([FromBody]ItemViewModel itemViewModel)
         {
-            Stream req = Request.InputStream;
-            req.Seek(0, SeekOrigin.Begin);
-            string json = new StreamReader(req).ReadToEnd();
-
-            var itemViewModel = JsonConvert.DeserializeObject<ItemViewModel>(json);
-            ValidateModel(itemViewModel);
-
             if (ModelState.IsValid)
             {
                 using (var db = new AppDbContext())
@@ -74,7 +59,7 @@ namespace WebApp.Controllers
 
                         await db.SaveChangesAsync();
 
-                        return RedirectToAction("Index");
+                        return Ok();
                     }
                     else
                     {
@@ -83,18 +68,11 @@ namespace WebApp.Controllers
                 }
             }
 
-            LoadViewBagInfoForCreateItem();
-            return View(itemViewModel);
-        }
-
-
-        public ActionResult AddCategory()
-        {
-            return View();
+            return BadRequest(ModelState);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddCategory(Category category)
+        public async Task<IHttpActionResult> AddCategory([FromBody]Category category)
         {
             if (ModelState.IsValid)
             {
@@ -108,33 +86,23 @@ namespace WebApp.Controllers
                     {
                         db.Categories.Add(category);
                         await db.SaveChangesAsync();
-                        return RedirectToAction("Index");
+                        return Ok();
                     }
                 }
             }
 
-            return View(category);
+            return BadRequest(ModelState);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>have DB categories or not</returns>
-        public bool LoadViewBagInfoForCreateItem()
+        [HttpGet]
+        public JsonResult<List<Category>> Categories()
         {
-            ViewBag.url = HttpContext.Request.Url;
             using (var db = new AppDbContext())
             {
-                if (db.Categories.FirstOrDefault() != null)
-                {
-                    ViewBag.Categories = new SelectList(db.Categories.ToList(), "CategoryId", "Name");
-                    ViewBag.CountCategories = db.Categories.Count();
-                    return true;
-                }
-                return false;
+                var categories = db.Categories.ToList();
+
+                return Json(categories);
             }
         }
-
-
     }
 }

@@ -181,6 +181,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\api\AccountController.cs" />
+    <Compile Include="Controllers\api\ItemController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Global.asax.cs">
@@ -189,6 +191,7 @@
     <Compile Include="Helpers\ConverterVM.cs" />
     <Compile Include="Helpers\EnsureOneElement.cs" />
     <Compile Include="Helpers\EnsureUniqueElements.cs" />
+    <Compile Include="Helpers\Extension.cs" />
     <Compile Include="Migrations\201910040807446_initial.cs" />
     <Compile Include="Migrations\201910040807446_initial.Designer.cs">
       <DependentUpon>201910040807446_initial.cs</DependentUpon>
