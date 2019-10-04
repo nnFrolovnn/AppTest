@@ -12,7 +12,7 @@ namespace WebApp.Models
         public DbSet<Category> Categories { get; set; }
 
         public AppDbContext()
-            : base("DefaultConnection")
+            : base("WebAppDb", throwIfV1Schema: false)
         {
         }
 
@@ -23,17 +23,18 @@ namespace WebApp.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             // item - category many to many
             modelBuilder.Entity<ItemCategory>()
                 .HasKey(x => new { x.ItemId, x.CategoryId });
 
             modelBuilder.Entity<ItemCategory>()
-                .HasOptional(x => x.Item)
+                .HasRequired(x => x.Item)
                 .WithMany(m => m.Categories)
                 .HasForeignKey(x => x.ItemId);
 
             modelBuilder.Entity<ItemCategory>()
-                .HasOptional(x => x.Category)
+                .HasRequired(x => x.Category)
                 .WithMany(m => m.Items)
                 .HasForeignKey(x => x.CategoryId);
         }
