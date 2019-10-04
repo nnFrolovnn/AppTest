@@ -9,9 +9,12 @@ using System.Web;
 
 namespace WebApp.Models
 {
-    public class User: IdentityUser
+    public class User : IdentityUser
     {
         public override string Id { get; set; }
+
+        public string NickName { get; set; }
+
         public string Color { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)

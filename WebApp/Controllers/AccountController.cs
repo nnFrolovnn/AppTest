@@ -117,7 +117,7 @@ namespace WebApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    await UserManager.AddToRoleAsync(user.Id, "client");
+                    //await UserManager.AddToRoleAsync(user.Id, "client");
 
                     //todo confirmation
                     //var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

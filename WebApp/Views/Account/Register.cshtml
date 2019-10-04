@@ -1,4 +1,4 @@
-﻿@model TestWebApp.Models.RegisterViewModel
+﻿@model WebApp.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
 }
@@ -15,6 +15,18 @@
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.NickName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.NickName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Color, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Color, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">

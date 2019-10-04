@@ -24,6 +24,7 @@ namespace WebApp.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             // item - category many to many
             modelBuilder.Entity<ItemCategory>()
                 .HasKey(x => new { x.ItemId, x.CategoryId });

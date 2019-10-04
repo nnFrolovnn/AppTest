@@ -6,8 +6,8 @@ namespace WebApp.Models
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Name")]
-        public string Name { get; set; }
+        [Display(Name = "NickName")]
+        public string NickName { get; set; }
 
         [Required]
         [Display(Name = "Email address")]
@@ -18,7 +18,7 @@ namespace WebApp.Models
 
         [Required]
         [Display(Name = "Color")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [MaxLength(100, ErrorMessage = "max length of color is 100")]
         public string Color { get; set; }
 
         [Required]
