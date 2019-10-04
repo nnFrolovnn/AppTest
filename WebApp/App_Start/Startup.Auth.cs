@@ -33,7 +33,6 @@ namespace WebApp
             var audienceId = "oweijr-443";
             var audienceSecret = TextEncodings.Base64Url.Decode("sdfghjkxcvbnm,3");
 
-            // Api controllers with an [Authorize] attribute will be validated with JWT
             app.UseJwtBearerAuthentication(new JwtBearerAuthenticationOptions
             {
                 AuthenticationMode = AuthenticationMode.Active,
