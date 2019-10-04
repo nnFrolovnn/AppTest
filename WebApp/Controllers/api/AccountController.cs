@@ -16,6 +16,8 @@ using System.Security.Claims;
 
 namespace WebApp.Controllers.api
 {
+    [Authorize]
+    
     public class AccountController : ApiController
     {
         private ApplicationSignInManager _signInManager;

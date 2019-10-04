@@ -13,11 +13,10 @@ using System.Threading.Tasks;
 namespace WebApp.Controllers.api
 {
     [Authorize]
-    [Route("api/{controller}/{action}")]
     public class ItemController : ApiController
     {
         [HttpGet]
-        public JsonResult<List<Item>> Index()
+        public JsonResult<List<ItemViewModelApi>> Index()
         {
             using (var db = new AppDbContext())
             {
@@ -26,7 +25,25 @@ namespace WebApp.Controllers.api
                               .Include(x => x.Categories.Select(y => y.Category))
                               .ToList();
 
-                return Json(items);
+                var itemsVM = new List<ItemViewModelApi>();
+                foreach (var item in items)
+                {
+                    var tempItem = new ItemViewModelApi()
+                    {
+                        Name = item.Name,
+                        Categories = new List<CategoryViewModel>()
+                    };
+
+                    foreach(var category in item.Categories)
+                    {
+                        tempItem.Categories.Add(new CategoryViewModel()
+                        {
+                            Name = category.Category.Name,
+                            CategoryId = category.CategoryId
+                        });
+                    }
+                }
+                return Json(itemsVM);
             }
         }
 
@@ -95,13 +112,21 @@ namespace WebApp.Controllers.api
         }
 
         [HttpGet]
-        public JsonResult<List<Category>> Categories()
+        public JsonResult<List<CategoryViewModel>> Categories()
         {
             using (var db = new AppDbContext())
             {
                 var categories = db.Categories.ToList();
-
-                return Json(categories);
+                var categoriesVM = new List<CategoryViewModel>();
+                foreach(var category in categories)
+                {
+                    categoriesVM.Add(new CategoryViewModel()
+                    {
+                        Name = category.Name,
+                        CategoryId = category.CategoryId
+                    });
+                }
+                return Json(categoriesVM);
             }
         }
     }

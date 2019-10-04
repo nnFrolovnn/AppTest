@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.Google;
+using Microsoft.Owin.Security.DataHandler.Encoder;
+using Microsoft.Owin.Security.Jwt;
 using Owin;
 using WebApp.Models;
 
@@ -17,6 +17,8 @@ namespace WebApp
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
 
+
+            app.UseOAuthBearerAuthentication(OAuthBearerOptions);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
@@ -24,6 +26,19 @@ namespace WebApp
             });
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+        }
+
+        private void ConfigureOAuthTokenConsumption(IAppBuilder app)
+        {
+            var audienceId = "oweijr-443";
+            var audienceSecret = TextEncodings.Base64Url.Decode("sdfghjkxcvbnm,3");
+
+            // Api controllers with an [Authorize] attribute will be validated with JWT
+            app.UseJwtBearerAuthentication(new JwtBearerAuthenticationOptions
+            {
+                AuthenticationMode = AuthenticationMode.Active,
+                AllowedAudiences = new[] { audienceId }
+            });
         }
     }
 }
