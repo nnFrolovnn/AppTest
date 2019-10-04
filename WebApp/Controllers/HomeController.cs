@@ -13,12 +13,5 @@ namespace WebApp.Controllers
         {
             return View();
         }
-
-        public ActionResult Items()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
     }
 }

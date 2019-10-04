@@ -1,0 +1,39 @@
+﻿@model IEnumerable<WebApp.Models.ItemViewModel>
+
+@{
+    ViewBag.Title = "Item";
+}
+
+<h2>Item</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Categories)
+        </th>
+    </tr>
+
+    @if(Model!= null)
+    {
+        foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @foreach (var category in item.Categories)
+                {
+                    @(category + ", ");
+                }
+            </td>
+        </tr>
+    }
+}
+
+</table>

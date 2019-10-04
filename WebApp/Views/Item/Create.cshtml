@@ -1,0 +1,114 @@
+﻿@model WebApp.Models.ItemViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    <div class="form-horizontal">
+        <h4>ItemViewModel</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", id ="name" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.LabelFor(model => model.Categories, htmlAttributes: new { @class = "control-label col-md-2" })
+        <br />
+        <div class="form-group" id="categories">
+            @if (Model != null)
+            {
+                foreach (var categ in Model.Categories)
+                {
+                    <div class="col-md-10" id="one-category">
+                        <label class="control-label col-md-2"> name: </label>
+                        @*@Html.EditorFor(modelItem => categ, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.DropDownList("Name", ViewBag.Categories as SelectList)
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-md-10" id="one-category">
+                    <label class="control-label col-md-2"> name: </label>
+                    @*<input type="text" class="form-control"/>*@
+                    @Html.DropDownList("Name", ViewBag.Categories as SelectList)
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" id="addCategoryBtn" value="Add Category" class="btn btn-default" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="submit" type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type="text/javascript">
+
+    var categories = document.getElementById("categories");
+    var one_category = document.getElementById("one-category").cloneNode(true);
+    var maxCategoriesCount = @ViewBag.CountCategories - 1;
+
+    document.getElementById("addCategoryBtn").addEventListener("click", (e) => {
+            e.preventDefault();
+            if (maxCategoriesCount > 0) {
+                categories.appendChild(one_category.cloneNode(true));
+                maxCategoriesCount--;
+            }
+    });
+
+    document.getElementById("submit").addEventListener("click", e => {
+        e.preventDefault();
+
+        let item_categories = categories.querySelectorAll("#one-category");
+        console.log(item_categories);
+
+        let item = {
+            Name: document.getElementById("name").value,
+            Categories: new Array()
+        };
+
+        for (let i = 0; i < item_categories.length; i++) {
+            item.Categories.push(
+                item_categories[i].querySelector("select").value
+            );
+        }
+
+        console.log(JSON.stringify(item));
+
+        const url = "@ViewBag.url";
+
+        let req = new XMLHttpRequest()
+        req.open('POST', url, true)
+        req.setRequestHeader('Content-type', 'application/json')
+
+        req.addEventListener("load", function () {
+            let message = (req.status === 200) ?
+                "успешное добавление" :
+                "Ошибка " + req.status + req.responseText + "\n вещь не добавлена!";
+            alert(message)
+        });
+
+        req.send(JSON.stringify(item))
+    })
+</script>

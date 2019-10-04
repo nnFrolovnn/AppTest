@@ -17,13 +17,13 @@ namespace WebApp.Controllers
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
-        private UserManager _userManager;
+        private ApplicationUserManager _userManager;
 
         public AccountController()
         {
         }
 
-        public AccountController(UserManager userManager, ApplicationSignInManager signInManager)
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -41,11 +41,11 @@ namespace WebApp.Controllers
             }
         }
 
-        public UserManager UserManager
+        public ApplicationUserManager UserManager
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager>();
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             }
             private set
             {
@@ -78,7 +78,7 @@ namespace WebApp.Controllers
                     AuthenticationManager.SignOut();
                     AuthenticationManager.SignIn(new AuthenticationProperties
                     {
-                        IsPersistent = true
+                        IsPersistent = true,                      
                     }, claim);
 
 
@@ -117,7 +117,7 @@ namespace WebApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    //await UserManager.AddToRoleAsync(user.Id, "client");
+                    await UserManager.AddToRoleAsync(user.Id, "user");
 
                     //todo confirmation
                     //var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

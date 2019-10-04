@@ -51,36 +51,19 @@ namespace WebApp
         }
     }
 
-    public class UserManager : UserManager<User>
+    public class ApplicationUserManager : UserManager<User>
     {
-        public UserManager(IUserStore<User> store)
+        public ApplicationUserManager(IUserStore<User> store)
             : base(store)
         {
         }
 
-        public static UserManager Create(IdentityFactoryOptions<UserManager> options, IOwinContext context)
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new UserManager(new UserStore<User>(context.Get<AppDbContext>()));
-
-            manager.UserValidator = new UserValidator<User>(manager)
+            var manager = new ApplicationUserManager(new UserStore<User>(context.Get<AppDbContext>()))
             {
-                AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                EmailService = new EmailService()
             };
-
-            manager.PasswordValidator = new PasswordValidator
-            {
-                RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
-            };
-
-            manager.UserLockoutEnabledByDefault = false; // todo
-
-            manager.EmailService = new EmailService();
-
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
@@ -93,19 +76,19 @@ namespace WebApp
 
     public class ApplicationSignInManager : SignInManager<User, string>
     {
-        public ApplicationSignInManager(UserManager userManager, IAuthenticationManager authenticationManager)
+        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)
         {
         }
 
         public override Task<ClaimsIdentity> CreateUserIdentityAsync(User user)
         {
-            return user.GenerateUserIdentityAsync((UserManager)UserManager);
+            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
         }
 
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {
-            return new ApplicationSignInManager(context.GetUserManager<UserManager>(), context.Authentication);
+            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
     }
 }
